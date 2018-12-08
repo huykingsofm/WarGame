@@ -1,0 +1,400 @@
+﻿Giai đoạn 1 : Đấu thầu xe tăng
+	- Các đội đọc lần lượt file market.inp và xuất ra file market.out
+	- File market.inp có cấu trúc:
+		+ Dòng đầu là số n, đại diện cho số lượng xe tăng trong buổi đấu giá.
+		+ Dòng thứ 2 là số m, đại diện cho chỉ số của xe tăng hiện tại đang được
+	đấu giá(chỉ số đánh từ 1)
+		+ Dòng thứ 3 là K, số tiền hiện tại của đội
+		+ n dòng tiếp theo, dòng thứ i gồm 4 giá trị pi, hi, ri, ai với
+	pi là giá thấp nhất để đấu giá xe tăng thứ i (0<=pi<=300)
+	hi là máu của chiếc xe tăng i (1 <= hi <= 8)
+	ri là tầm bắn của chiếc xe tăng i(2 <= ri <= 6)
+	ai là sức tấn công của xe tăng i ( ai = 1 hoặc ai = 2).
+	
+	- File market.out chứa duy nhất một số nguyên mô tả số tiền mà đội bạn đấu giá
+	cho xe tăng thứ m.
+		nếu số tiền thấp hơn giá thấp nhất pi, bạn không được phép đấu giá 
+		xe tăng này.
+ 	- Các file market.out sẽ được đọc và lưu lại các xe tăng đã đấu giá được.
+	- Sau khi đấu giá kết thúc, sẽ ghi lại kết quả các xe tăng này vào file tank.inp
+
+Quá trình thực hiện giai đoạn 1:
+	Bước 1: - File core.exe sẽ nhận dữ liệu từ market.data
+		File market.data sẽ có cấu trúc giống market.inp, nhưng không có số m.
+		Số K là số tiền ban đầu của cả 2 đội
+		- Sau đó tạo ra 2 file team1/market.inp và team2/market.inp tương ứng
+		với file market.inp của từng đội
+
+	Bước 2: file core.exe sẽ gọi 2 file thực thi market.exe của mỗi đội để thực hiện 
+	đấu giá với dữ liệu đầu vào có m = 1, ứng với đang đấu giá xe tăng đầu tiên.
+	
+	Bước 3: Đợi sau khi hết timeout. Core.exe sẽ nhận dữ liệu từ các file market.out.
+	Xử lý dữ liệu để xác nhận xe tăng sẽ thuộc về đội nào hoặc không ai nhân được xe
+	tăng này, lưu vào một mảng.
+
+	Bước 4: Thiết lập lại giá trị của 2 file market.inp và trở lại bước 2 với m tăng
+	lên 1 đơn vị.
+	
+	Bước 5: Sau khi thực hiện đấu giá toàn bộ các xe tăng, lưu các xe tăng của mỗi
+	đội vào file tank.inp tương ứng, bắt đầu giai đoạn 2.
+
+Giai đoạn 2: DÀN TRẬN
+	- Các đội nhận dữ liệu từ file deploy.inp, sắp xếp đội hình xe tăng trên một trận
+	8x8, ghi dữ liệu vào file deploy.out
+	
+	- File deploy.inp có cấu trúc:
+		+ Dòng đầu là số lượng xe tăng mà đội bạn có thể mang đi chiến đấu
+		+ Dòng thứ 2 là thứ tự của đội bạn(1 hoặc 2)
+		+ n dòng tiếp theo, dòng i gồm 3 giá trị hi, ri, ai với
+		hi là máu của xe tăng i ( 1 <= hi <= 8)
+		ri là tầm bắn của xe tăng i(1 <= ri <= 6)
+		ai là sức tấn công của xe tăng i (ai = 1 hoặc ai = 2)
+
+	- File deploy.out có cấu trúc là một ma trận số nguyên 8x8
+		+ Mỗi ô là một số nguyên, hoặc là 0 nếu không đặt xe tăng, hoặc là chỉ số
+		của 1 chiếc xe tăng trong danh sách xe tăng của bạn.
+		+ Mỗi 1 chiếc xe tăng chỉ được xuất hiện 1 lần.
+		+ Nếu bạn thuộc đội 1, bạn chỉ có thể dàn trận hình của bạn ở 2 hàng đầu
+	          Nếu bạn thuộc đội 2, bạn chỉ có thê dàn trận hình ở 2 hàng cuối
+	
+	- Nếu file deploy.out sai cấu trúc, các xe tăng sẽ được dàn trận tự động
+
+Quá trình thực hiện giai đoạn 2:
+	- Bước 1: Core.exe đọc dữ liệu từ GameXX/deploy.data, xử lý dữ liệu ghi ra file
+	deploy.inp tương ứng cho mỗi đội
+	- Bước 2: Core.exe sẽ khởi động 2 file deploy.exe của mỗi đội, sau khi chờ hết
+	timeout, đọc dữ liệu từ file deploy.out, xử lý dữ liệu, tạo ra file fight.out
+	Chuẩn bị chuyển sang giai đoạn 4.
+
+Giai đoạn 4: Trận chiến cuối cùng
+	- Các đội sẽ thực hiện chiến đấu theo từng lượt, các đội thực hiện các bước đi
+	đồng thời. Mỗi lượt mỗi đội sẽ đọc từ file fight.inp chứa dữ liệu của trận chiến
+	và xuất ra file fight.out là nước đi của bạn.
+
+	- File fight.inp có cấu trúc:
+		+ Dòng đầu là 2 số n1 và n2 tương ứng là số lượng xe tăng đang chiến đấu
+		của 2 đội.
+		+ Dòng thứ 2 là số thứ tự đội bạn (1 hoặc 2)
+		+ Dòng thứ 3 là chỉ số của lượt hiện tại
+		
+		+ n dòng tiếp theo, dòng i gồm 3 giá trị hi, ri, ai là chỉ số của xe tăng
+		đội 1 với
+		hi là máu hiện tại của xe tăng i ( 1 <= hi <= 8)
+		ri là tầm bắn của xe tăng i(1 <= ri <= 6)
+		ai là sức tấn công của xe tăng i (ai = 1 hoặc ai = 2)
+     		
+		+ n dòng tiếp theo, dòng i gồm 3 giá trị hi, ri, ai là chỉ số của xe tăng
+		đội 2 với
+		hi là máu hiện tại của xe tăng i ( 1 <= hi <= 8)
+		ri là tầm bắn của xe tăng i(1 <= ri <= 6)
+		ai là sức tấn công của xe tăng i (ai = 1 hoặc ai = 2)
+     		
+		+ Tiếp theo là một ma trận 8x8 thể hiện vị trí của toàn bộ trận chiến
+		Số 0 là không có xe tăng, số i với i > 0 thể hiện chỉ số xe tăng của đội
+		1, số j với j < 0 thể hiện chỉ số xe tăng của đội 2.
+
+	- File fight.out có cấu trúc:
+		- Gồm 4 giá trị trên cùng một dòng : t id x y với
+			+ t là loại nước đi (t == 1 là di chuyển, t == 2 là bắn)
+			+ id là chỉ số xe tăng thực hiện nước đi
+			+ x,y là tọa độ của thực hiện nước đi.
+	
+	- Nếu file fight.out sai cấu trúc hoặc nước đi không hợp lệ, lượt đó đội bị lỗi
+	sẽ đứng yên.
+
+Quá trình thực hiện giai đoạn 4:
+	Bước 1: Đọc dữ liệu từ file GameXX/fight.data, xử lý và tạo ra file fight.inp cho
+	2 đội
+	Bước 2: Khởi động file fight.exe của 2 đội, chờ hết timeout, đọc dữ liệu từ file
+	fight.out.
+	Bước 3: Đọc dữ liệu, lưu trạng thái, xuất kết quả và tạo ra file fight.inp tiếp 
+	theo. Lặp lại bước 2.
+
+
+Thư mục chứa game gồm
+GAME
+	GUI.exe
+
+	FOLDER_PLAYER1/
+		market.exe
+		tank.exe
+		deploy.exe
+		fight.exe
+		IO/
+			market.inp
+			market.out
+			tank.inp
+			tank.out
+			deploy.inp
+			deploy.out
+			fight.inp	
+			fight.out		
+	/FOLDER_PLAYER2
+		market.exe
+		tank.exe
+		deploy.exe
+		fight.exe
+		IO/
+			market.inp
+			market.out
+			tank.inp
+			tank.out
+			deploy.inp
+			deploy.out
+			fight.inp	
+			fight.out
+	/FOLDER_CORE
+		game.exe
+		IO/
+			market.data
+			tank.data
+			deploy.data
+			fight.data	
+
+
+game.exe sẽ thực hiện hoàn toàn việc kết nối các để chơi game.
+ngoài ra, game.exe còn có một tùy chọn để có thể thực hiện các thao tác dưới sự điều
+khiển của GUI.
+GUI.exe là file thực thi tạo ra giao diện, đồng thời điều khiển và lấy các giá trị trả về
+từ game.exe để hiển thị.
+
+
+Mô hình quan hệ của các đối tượng
+				GAME
+				  |
+	 -----------------------------------------------------------
+	 |			|		|		   |
+     giaidoan_1		    giaidoan_2      giaidoan_3        giaidoan_4
+
+
+Thiết kế đối tượng GAME:
+	Thuộc tính:
+		FOLDER player_1 chứa các file của player 1
+		FOLDER player_2 chứa các file của player 2
+		FOLDER game	chứa các file điều khiển game
+		FILE log	là file lưu trữ nhật ký trận đấu
+
+		BOOL giaidoan_1 cho biết giai đoạn 1 đã hoàn thành hay chưa
+		BOOL giaidoan_2 cho biết giai đoạn 2 đã hoàn thành hay chưa
+		BOOL giaidoan_3 cho biết giai đoạn 3 đã hoàn thành hay chưa
+		BOOL giaidoan_4 cho biết giai đoạn 4 đã hoàn thành hay chưa
+	Phương thức:
+		// Khởi tạo và thiết lập thuộc tính
+		Khởi tạo mặc định(): Khởi tạo các thuộc tính với giá trị mặc định(NULL)
+		Khởi tạo với tham số(3 FOLDER): Khởi tạo các thuộc tính với các tham số 
+			được truyền vào
+		Thiết lập FOLDER player(2 FOLDER): Thiết lập giá trị cho 2 FOLDER player
+		Thiết lập FOLDER game(1 FOLDER): Thiết lập folder cho core game
+		
+		// virtual giaidoan_1
+		Khởi động đấu giá()
+		Đấu giá ()
+		Kết thúc đấu giá()
+		// Giá trị trả về của giai đoạn này gồm nhiều giá trị có dạng
+			INT exitCode
+			INT id - số hiệu của xe tăng đang đấu giá
+			TANK t - chỉ số sức mạnh của xe tăng đang được đấu giá
+			INT p1 - số tiền đấu giá của player 1
+			INT p2 - số tiền đấu giá của player 2
+
+
+		// virtual giaidoan_2
+		Khởi động chọn tank()
+		Chọn tank()
+		Kết thúc chọn tank() 
+		//Giá trị trả về của giai đoạn này gồm một giá trị có dạng:
+			INT np1 - số lượng xe tăng được chọn của player 1
+			INT np2	- số lượng xe tăng được chọn của player 2
+			TANK ARRAY t1 - mảng các xe tăng được chọn của player 1
+			TANK ARRAY t2 - mảng các xe tăng được chọn của player 2
+
+		// virtual giaidoan_3
+		Khởi động dàn trận()
+		Dàn trận()
+		Kết thúc dàn trận()
+		// Giá trị trả về của giai đoạn này gồm một giá trị có dạng
+			8x8 TANK ARRAY t - trận hình của các xe tank ở mỗi đội
+
+		// virtual giaidoan_4
+		Khởi động chiến đấu()
+		Chiến đấu()
+		Kết thúc chiến đấu()
+		// Giá trị trả về của giai đoạn này gồm nhiều giá trị có dạng
+			INT exitCode
+			8x8 TANK ARRAY t - trận hình xe tăng hiện tại
+
+Thiết kế đối tượng giaidoan_1:
+	Thuộc tính:
+		TANK ARRAY daugia : các tăng đang đấu giá
+		INT n : số lượng các tăng đang đấu giá
+
+		TANK ARRAY daugia_1 : các tăng đã đấu giá thành công của player 1
+		TANK ARRAY daugia_2 : các tăng đã đấu giá thành công của player 2
+		INT n1	- số lượng tank đấu giá thành công của player 1
+		INT n2  - số lượng tank đấu giá thành công của player 2
+		
+		INT ARRAY tien_1 : số tiền đang có ở từng lượt của player 1
+		INT ARRAY tien_2 : số tiền đang có ở từng lượt của player 2
+
+		INT ARRAY tien_dau_gia_1 : số tiền đấu giá cho từng tank của player 1
+		INT ARRAY tien_dau_gia_2 : số tiền đấu giá cho từng tank của player 2
+		
+		INT luot : chỉ số của tăng đang được đấu giá
+		
+	Phương thức:
+		Khởi tạo() : Thiết lập các giá trị về mặc định
+
+		Khởi động đấu giá ():
+			+ Đọc file Game/IO/market.data, lấy giá trị tiền ban đầu và danh
+				sách các xe tăng, thiết lập giá trị ban đầu cho các 
+				thuộc tính.
+			+ Tạo ra 2 file market.inp khởi đầu cho 2 player, gồm tiền nhận
+				được, chỉ số xe tăng ban đầu và danh sách xe tăng.
+			+ Cấp phát vùng nhớ phù hợp (nếu có)
+
+		Đấu giá():
+			+ Khởi động 2 file market.exe của mỗi đội để tiến hành đấu giá
+			cho lượt hiện tại.
+			+ Sau khi hêt thời gian chờ, tiến hành kiểm tra file market.out
+			+ Thiết lập các giá trị mới cho các thuộc tính
+			+ Tạo ra 2 file market.inp mới cho lần đấu giá tiếp tiếp
+			+ Trả về các giá trị gồm {
+					exitcode,
+					Giá tiền đấu giá của player 1
+					Giá tiền đấu giá của player 2
+					Player đấu giá thành công
+				}	
+		
+		Kết thúc đấu giá():
+			+ Tiến hành tạo file tank.data cho giai đoạn tiếp theo, gồm danh
+				sách các xe tăng đã đấu giá được của 2 player. 	
+			+ Lưu lại nhật ký đấu giá vào FILE log, gồm danh sách các tăng,
+				kèm theo giá tiền đấu giá của mỗi player và đội nào nhận
+				được tăng.
+			+ Gửi thông báo kết thúc đấu giá, đặt biến giaidoan_1 bằng true,
+
+
+Thiết kế đối tượng giaidoan_2:
+	Thuộc tính:
+		TANK ARRAY daugia_1 : các tăng đã đấu giá thành công của player 1
+		TANK ARRAY daugia_2 : các tăng đã đấu giá thành công của player 2
+		INT n1	- số lượng tank đấu giá thành công của player 1
+		INT n2  - số lượng tank đấu giá thành công của player 2
+		
+		TANK ARRAY chon_1 : các tăng đã chọn của player 1
+		TANK ARRAY chon_2 : các tăng đã chọn của player 2
+		INT m1	- số lượng tank đã chọn của player 1
+		INT m2  - số lượng tank đã chọn của player 2
+		
+	Phương thức:
+		Khởi tạo() : Thiết lập các giá trị về mặc định
+
+		Khởi động đấu giá ():
+			+ Đọc file Game/IO/tank.data để lấy các dữ liệu cần thiết, gồm
+				danh sách các tank đã đấu giá thành công của 2 player,
+				lưu vào các thuộc tính.
+			+ Tạo ra 2 file market.inp khởi đầu cho 2 player, gồm danh sách
+				xe tăng tương ứng của đội.
+			+ Cấp phát vùng nhớ phù hợp (nếu có)
+
+		Chọn tank():
+			+ Khởi động 2 file tank.exe của mỗi đội để tiến hành chọn xe 
+				tăng cần thiết.
+			+ Sau khi hêt thời gian chờ, tiến hành kiểm tra file tank.out
+			+ Lưu lại các tank đã chọn.
+			+ Trả về các giá trị cần thiết, gồm{
+						exitCode,
+						Danh sách tank player 1,
+						Danh sách tank player 2
+					}
+		
+		Kết thúc đấu giá():
+			+ Tiến hành tạo file deploy.data cho giai đoạn tiếp theo, gồm
+				danh sách xe tăng đã chọn của 2 đội.	
+			+ Lưu lại nhật ký đấu giá vào FILE log, gồm danh sách các tank
+				đã chọn.
+			+ Gửi thông báo kết thúc đấu giá	
+
+Thiết kế đối tượng giaidoan_3:
+	Thuộc tính:
+		TANK ARRAY chon_1 : các tăng đã chọn của player 1
+		TANK ARRAY chon_2 : các tăng đã chọn của player 2
+		INT m1	- số lượng tank đã chọn của player 1
+		INT m2  - số lượng tank đã chọn của player 2
+		
+		8x8 TANK MATRIX battle : lưu lại vị trí các tank trên bản đồ
+
+	Phương thức:
+		Khởi tạo(): Khởi tạo giá trị mặc định cho các thuộc tính
+	
+		Khởi động dàn trận():
+			+ Đọc dữ liệu từ file Game/IO/deploy.data, lấy ra danh sách tank
+				của 2 đội, lưu vào mảng.
+			+ Tạo ra 2 file deploy.inp gồm danh sách xe tăng tương ứng của 
+				mỗi đội.
+			+ Cấp phát vùng nhớ
+		
+		Dàn trận():
+			+ Khởi động 2 file deploy.exe của cả 2 đội để tiến hành cho mỗi 
+				đội dàn trận hình.
+	
+			+ Sau khi hết timeout, đọc file deploy.out của mỗi đội,	kiểm tra 
+				tính đúng đắn và lưu lại vị trí vào ma trận battle.
+
+			+ Trả về các giá trị cần thiết, gồm{
+					exitCode,
+					battle,
+					danh sách xe tăng đội 1,
+					danh sách xe tăng đội 2
+				}
+
+		Kết thúc dàn trận():
+			+ Ghi dữ liệu trận đấu vào file fight.data cho giai đoạn tiếp 
+				theo, gồm ma trận trận đấu và danh sách xe tăng mỗi đội.
+		 	+ Lưu giữ liệu vào nhật ký trận đấu, bao gồm ma trận trận đấu và
+				danh sách xe tăng mỗi đội.
+			+ Thông báo kết thúc dàn trận.
+
+
+Thiết kế đối tượng giaidoan_4:
+	Thuộc tính:
+		8x8 TANK MATRIX ARRAY battle : Trận hình xe tăng tại mỗi lượt
+		
+		TANK ARRAY ARRAY stt_1 : trạng thái các tăng của player 1 tại mỗi lượt
+		TANK ARRAY ARRAY stt_2 : trạng thái các tăng của player 2 tại mỗi lượt
+
+		INT m1	- số lượng tank của player 1
+		INT m2  - số lượng tank của player 2
+	
+		NUOCDI ARRAY nuocdi : lưu lại nước đi cho mỗi đội ở mỗi lượt đấu
+
+		INT luot : lượt hiện tại của trận đấu
+
+	Phương thức:
+		Khởi tạo(): Khởi tạo giá trị mặc định cho các thuộc tính
+
+		Khởi động chiến đấu():
+			+ Đọc dữ liệu từ file Game/IO/fight.data, lấy ma trận trò game
+				và dữ liệu của xe tăng, thiết lập các giá trị mặc định.
+			+ Tạo ra 2 file fight.data tương ứng với mỗi player.
+		
+		Chiến đấu():
+			+ Khởi động 2 file fight.exe của mỗi đội để bắt đầu thuật tìm
+				nước đi cho lượt hiện tại.
+			+ Chờ hết timeout, đọc dữ liệu từ file fight.out để xác định 
+				nước đi của mỗi đội.
+			+ Thay đổi trạng thái phù hợp 
+			+ Tạo ra file fight.inp cho lượt đấu kế tiếp gồm trạng thái trận
+				đấu.
+			+ Trả về các giá trị gồm{
+					exitCode,
+					Trạng thái trận đấu,
+					Điểm đội 1
+					Điểm đội 2
+				} 
+			
+		Kết thúc chiến đấu():
+			+ Tính toán đội chiến thắng
+			+ Lưu các giá trị cần thiết, gồm trạng thái ban đầu và nước đi
+				của mỗi đội ở mỗi lượt.
+			+ Thông báo kết thúc và đội thắng cuộc
